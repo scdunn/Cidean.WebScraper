@@ -25,6 +25,12 @@ namespace Cidean.WebScraper
 
             //Todo: BEGIN INPUT FOR PROCESSING
 
+            string filename = AppDomain.CurrentDomain.BaseDirectory + "/datamaps/amazon.xml";
+
+            Scraper scraper = new Scraper();
+            scraper.LoadDataMapFile(filename);
+            
+
             //Exit Application
             Console.WriteLine("Press any key to exit.");
             Console.ReadKey();

@@ -23,6 +23,12 @@ namespace Cidean.WebScraper
             //only continue if datamap is defined
             if (dataMap == null)
                 return;
+
+            foreach(string url in dataMap.Urls)
+            {
+                //crawl
+            }
+
         }
 
         /// <summary>
