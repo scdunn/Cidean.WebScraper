@@ -29,10 +29,12 @@ namespace Cidean.WebScraper
             string filename = Path.Combine(baseDirectory, "datamaps\\amazon.xml");
 
             Scraper scraper = new Scraper();
-            scraper.LoadDataMapFile(filename);
+            DataMap map = DataMap.LoadFile(filename);
             Console.WriteLine("Data map {0} loaded successfully.", filename);
-            Console.WriteLine("Total urls to crawl {0}", scraper.DataMap.Urls.Count);
 
+            scraper.Execute(map);
+
+            
             //Exit Application
             Console.WriteLine("Press any key to exit.");
             Console.ReadKey();
