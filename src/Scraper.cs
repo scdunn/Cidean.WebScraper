@@ -24,8 +24,10 @@ namespace Cidean.WebScraper
         /// <summary>
         /// Execute the scrap of data from urls
         /// </summary>
-        public void Execute()
+        public void Execute(DataMap datamap)
         {
+            this.DataMap = datamap;
+
             //only continue if datamap is defined
             if (DataMap == null)
                 return;
@@ -33,34 +35,11 @@ namespace Cidean.WebScraper
             foreach(string url in DataMap.Urls)
             {
                 //crawl
+                Console.WriteLine("Crawling..." + url);
             }
 
         }
-
-        /// <summary>
-        /// Open datamap xml file and populate DataMap object
-        /// </summary>
-        public void LoadDataMapFile(string filename)
-        {
-            //check if file exists
-            if (!File.Exists(filename))
-                throw new FileNotFoundException();
-
-
-            //load from xml file into xdocument
-            XElement document = XElement.Load(new FileStream(filename, FileMode.Open));
-
-            //create new datamap
-            DataMap = new DataMap();
-            DataMap.Urls = new List<string>();
-
-            //read all urls to crawl
-            foreach(XElement element in document.Descendants("url"))
-            {
-                DataMap.Urls.Add(element.Value);
-            }
-
-        }
+        
 
         /// <summary>
         /// Log scraping event
