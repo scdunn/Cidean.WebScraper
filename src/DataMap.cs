@@ -12,6 +12,7 @@ namespace Cidean.WebScraper
     /// <summary>
     /// Definition file for content to scrape and output configuration
     /// </summary>
+    [XmlRoot("DataMap")]
     public class DataMap
     {
         [XmlElement("Name")]
@@ -19,6 +20,11 @@ namespace Cidean.WebScraper
         [XmlArray]
         [XmlArrayItem(ElementName = "Url")]
         public List<string> Urls { get; set; }
+
+        [XmlArray]
+        [XmlArrayItem(ElementName = "DataMapItem")]
+        public List<DataMapItem> DataMapItems { get; set; }
+
 
         /// <summary>
         /// Load datamap xml file and deserialize into object.  Static method on class.
