@@ -3,6 +3,12 @@
 <Urls>
   <Url><![CDATA[https://web.archive.org/web/20150616214557/http://www.amazon.com/gp/bestsellers/books/18]]></Url>
 </Urls>
-        
+<MapItems>
+  <MapItem type="list" path=".zg_itemImmersion" Name="Books" ItemName="Book">
+    <MapItem type="text" path=".zg_rankDiv" Name="Rank"/>
+    <MapItem type="text" path="a" Name="Title"/>
+    <MapItem type="text" path=".zg_byline" Name="Byline"/>
+  </MapItem>
+</MapItems>    
 </DataMap>
 
