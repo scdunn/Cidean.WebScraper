@@ -5,6 +5,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using AngleSharp.Dom;
+using System.Net;
 
 namespace Cidean.WebScraper
 {
@@ -32,10 +34,13 @@ namespace Cidean.WebScraper
             if (DataMap == null)
                 return;
 
+            //loop all Urls
             foreach(string url in DataMap.Urls)
             {
                 //crawl
-                Console.WriteLine("Crawling..." + url);
+                Console.WriteLine("Grabbing {0}", url);
+                
+
             }
 
         }
@@ -50,5 +55,29 @@ namespace Cidean.WebScraper
 
         }
 
-}
+        /// <summary>
+        /// Retrieve remote html document
+        /// </summary>
+        /// <param name="uri"></param>
+        /// <returns></returns>
+        private IDocument GetHtmlDocument(string uri)
+        {
+            //html to extract from document
+            string html = "";
+            string url = uri;
+            
+            //download html document from remote URI
+            using (WebClient client = new WebClient())
+            {
+                html = client.DownloadString(url);
+            }
+
+            //parse html document
+            var parser = new AngleSharp.Parser.Html.HtmlParser();
+
+            //return parsed IDocument
+            return parser.Parse(html);
+        }
+
+    }
 }
