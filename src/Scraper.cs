@@ -69,6 +69,9 @@ namespace Cidean.WebScraper
             //download html document from remote URI
             using (WebClient client = new WebClient())
             {
+                //add request headers to appear as browser
+                client.Headers.Add("user-agent", "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.103 Safari/537.36");
+                client.Headers.Add("accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8");
                 html = client.DownloadString(url);
             }
 
