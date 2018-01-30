@@ -40,8 +40,13 @@ namespace Cidean.WebScraper
                 //crawl
                 Console.WriteLine("Grabbing {0}", url);
                 var document = GetHtmlDocument(url);
-                if(document != null)
-                    Console.WriteLine(document.Title);
+                if (document != null)
+                {
+                    foreach(var dataMap in DataMap.DataMapItems)
+                    {
+                        //get element via AngleSharp
+                    }
+                }
 
             }
 
@@ -93,6 +98,24 @@ namespace Cidean.WebScraper
             }
         }
 
+        /// <summary>
+        /// Returns a text content from Document based on selector.
+        /// </summary>
+        /// <param name="document"></param>
+        /// <param name="selector"></param>
+        /// <returns></returns>
+        private string QuerySelector(IDocument document, string selector)
+        {
+            try
+            {
+                return document.QuerySelector(selector).TextContent.ToString();
+            }
+            catch (Exception ex)
+            {
+                //selector was not found
+                return "NULL";
+            }
 
+        }
     }
 }
