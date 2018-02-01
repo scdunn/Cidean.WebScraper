@@ -1,13 +1,13 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <DataMap name="amazon">
 <Urls>
-  <Url><![CDATA[https://web.archive.org/web/20150616214557/http://www.amazon.com/gp/bestsellers/books/18]]></Url>
+  <Url><![CDATA[C:\\Users\\ME\\Files\\Work\\Source\\Cidean.WebScraper\\src\\DataPages\\amazon-mystery-list.html]]></Url>
 </Urls>
 <DataMapItems>
   <DataMapItem Type="list" Path=".zg_itemImmersion" ListName="Books" Name="Book">
       <DataMapItems>
         <DataMapItem Type="text" Path=".zg_rankDiv" Name="Rank"/>
-        <DataMapItem Type="text" Path="a" Name="Title"/>
+        <DataMapItem Type="text" Path=".zg_title" Name="Title"/>
         <DataMapItem Type="text" Path=".zg_byline" Name="Byline"/>
       </DataMapItems>
     </DataMapItem>

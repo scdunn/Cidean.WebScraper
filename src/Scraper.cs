@@ -42,9 +42,27 @@ namespace Cidean.WebScraper
                 var document = GetHtmlDocument(url);
                 if (document != null)
                 {
-                    foreach(var dataMap in DataMap.DataMapItems)
+                    //loop through all root data map items
+                    foreach(var rootMapItem in DataMap.DataMapItems)
                     {
-                        //get element via AngleSharp
+                        //handle list map types (has child map items)
+                        if(rootMapItem.Type.ToLower() == "list")
+                        { 
+                            //get all list item elements from from selector
+                            var elementList = QueryElements(document.DocumentElement, rootMapItem.Path);
+
+                            //loop through all elements and extract all datamapitems
+                            foreach(var elementListItem in elementList)
+                            {
+                                foreach (var listMapItem in rootMapItem.DataMapItems)
+                                {
+                                    string value = QueryElement(elementListItem, listMapItem.Path).TextContent;
+                                    Console.WriteLine(value);
+                                }
+                            }
+                          
+                            
+                        }
                     }
                 }
 
@@ -98,24 +116,27 @@ namespace Cidean.WebScraper
             }
         }
 
+        
+
         /// <summary>
-        /// Returns a text content from Document based on selector.
+        /// Query an element within a document given the selector
         /// </summary>
-        /// <param name="document"></param>
+        /// <param name="element"></param>
         /// <param name="selector"></param>
         /// <returns></returns>
-        private string QuerySelector(IDocument document, string selector)
+        private IElement QueryElement(IElement parent, string selector)
         {
-            try
-            {
-                return document.QuerySelector(selector).TextContent.ToString();
-            }
-            catch (Exception ex)
-            {
-                //selector was not found
-                return "NULL";
-            }
-
+            var element = parent.QuerySelector(selector);
+            if (element == null) return null;
+            return element;
         }
+
+        private List<IElement> QueryElements(IElement parent, string selector)
+        {
+            var elements = parent.QuerySelectorAll(selector);
+            if (elements == null) return null;
+            return elements.ToList();
+        }
+
     }
 }
