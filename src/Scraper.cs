@@ -18,6 +18,8 @@ namespace Cidean.WebScraper
 
         public DataMap DataMap;
 
+        
+
         public Scraper()
         {
             
@@ -26,43 +28,65 @@ namespace Cidean.WebScraper
         /// <summary>
         /// Execute the scrap of data from urls
         /// </summary>
-        public void Execute(DataMap datamap)
+        public void Execute(DataMap datamap, string outputFile)
         {
+            
             this.DataMap = datamap;
 
             //only continue if datamap is defined
             if (DataMap == null)
                 return;
 
+            
+
             //loop all Urls
-            foreach(string url in DataMap.Urls)
+            foreach (string url in DataMap.Urls)
             {
+                
+
                 //crawl
                 Console.WriteLine("Grabbing {0}", url);
                 var document = GetHtmlDocument(url);
                 if (document != null)
                 {
+                    XElement xmlRoot = new XElement(DataMap.Name);
                     //loop through all root data map items
                     foreach(var rootMapItem in DataMap.DataMapItems)
                     {
+                        if(rootMapItem.Type.ToLower() == "text")
+                        {
+                            string value = QueryElement(document.DocumentElement, rootMapItem.Path).TextContent;
+                            xmlRoot.Add(new XElement(rootMapItem.Name, value.Trim()));
+
+                        }
+
                         //handle list map types (has child map items)
-                        if(rootMapItem.Type.ToLower() == "list")
+                        if (rootMapItem.Type.ToLower() == "list")
                         { 
+                            
                             //get all list item elements from from selector
                             var elementList = QueryElements(document.DocumentElement, rootMapItem.Path);
+
+                            XElement xmlList = new XElement(rootMapItem.ListName);
 
                             //loop through all elements and extract all datamapitems
                             foreach(var elementListItem in elementList)
                             {
+                                XElement xmlListItem = new XElement(rootMapItem.Name);
                                 foreach (var listMapItem in rootMapItem.DataMapItems)
                                 {
                                     string value = QueryElement(elementListItem, listMapItem.Path).TextContent;
-                                    Console.WriteLine(value);
+                                    xmlListItem.Add(new XElement(listMapItem.Name, value.Trim()));
                                 }
+                                xmlList.Add(xmlListItem);
                             }
+
+                            xmlRoot.Add(xmlList);
+                            
                           
                             
                         }
+                        xmlRoot.Save(outputFile);
                     }
                 }
 

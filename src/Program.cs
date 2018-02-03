@@ -32,7 +32,7 @@ namespace Cidean.WebScraper
             DataMap map = DataMap.LoadFile(filename);
             Console.WriteLine("Data map {0} loaded successfully.", filename);
 
-            scraper.Execute(map);
+            scraper.Execute(map, Path.Combine(baseDirectory,"data.xml"));
 
             
             //Exit Application
