@@ -15,7 +15,7 @@ namespace Cidean.WebScraper
     [XmlRoot("DataMap")]
     public class DataMap
     {
-        [XmlElement("Name")]
+        [XmlAttribute("Name")]
         public string Name { get; set; }
         [XmlArray]
         [XmlArrayItem(ElementName = "Url")]
