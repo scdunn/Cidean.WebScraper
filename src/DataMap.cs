@@ -15,11 +15,15 @@ namespace Cidean.WebScraper
     [XmlRoot("DataMap")]
     public class DataMap
     {
+
         [XmlAttribute("Name")]
         public string Name { get; set; }
         [XmlArray]
         [XmlArrayItem(ElementName = "Url")]
         public List<string> Urls { get; set; }
+
+        [XmlAttribute("Delay")]
+        public int Delay { get; set; }
 
         [XmlArray]
         [XmlArrayItem(ElementName = "DataMapItem")]

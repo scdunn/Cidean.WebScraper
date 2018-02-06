@@ -18,11 +18,14 @@ namespace Cidean.WebScraper
 
         public DataMap DataMap;
 
+        //Delay between url downloads to prevent overloading server
+        public int Delay; //milliseconds
         
 
         public Scraper()
         {
-            
+            //default delay between page downloads
+            Delay = 5000; //5 seconds
         }
 
         /// <summary>
@@ -30,8 +33,10 @@ namespace Cidean.WebScraper
         /// </summary>
         public void Execute(DataMap datamap, string outputFile)
         {
-            
             this.DataMap = datamap;
+
+            if (DataMap.Delay > 0)
+                this.Delay = DataMap.Delay;
 
             //only continue if datamap is defined
             if (DataMap == null)
@@ -91,6 +96,9 @@ namespace Cidean.WebScraper
                     }
                 }
                 xmlRoot.Add(xmlUrl);
+                //delay between next url grab in milliseconds
+                System.Threading.Thread.Sleep(Delay);
+
             }
             xmlRoot.Save(outputFile);
         }
