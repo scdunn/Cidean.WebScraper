@@ -37,26 +37,27 @@ namespace Cidean.WebScraper
             if (DataMap == null)
                 return;
 
-            
+            XElement xmlRoot = new XElement(DataMap.Name);
 
             //loop all Urls
             foreach (string url in DataMap.Urls)
             {
-                
 
+                XElement xmlUrl = new XElement("Source", new XAttribute("Url",url));
+                
                 //crawl
                 Console.WriteLine("Grabbing {0}", url);
                 var document = GetHtmlDocument(url);
                 if (document != null)
                 {
-                    XElement xmlRoot = new XElement(DataMap.Name);
+                   
                     //loop through all root data map items
                     foreach(var rootMapItem in DataMap.DataMapItems)
                     {
                         if(rootMapItem.Type.ToLower() == "text")
                         {
                             string value = QueryElement(document.DocumentElement, rootMapItem.Path).TextContent;
-                            xmlRoot.Add(new XElement(rootMapItem.Name, value.Trim()));
+                            xmlUrl.Add(new XElement(rootMapItem.Name, value.Trim()));
 
                         }
 
@@ -81,17 +82,17 @@ namespace Cidean.WebScraper
                                 xmlList.Add(xmlListItem);
                             }
 
-                            xmlRoot.Add(xmlList);
+                            xmlUrl.Add(xmlList);
                             
                           
                             
                         }
-                        xmlRoot.Save(outputFile);
+                        
                     }
                 }
-
+                xmlRoot.Add(xmlUrl);
             }
-
+            xmlRoot.Save(outputFile);
         }
         
 
