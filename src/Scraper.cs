@@ -16,6 +16,9 @@ namespace Cidean.WebScraper
     public class Scraper
     {
 
+        //Status events during scrape executing
+        public event EventHandler<ActioCompletedArgs> ActionCompleted;
+
         public DataMap DataMap;
 
         //Delay between url downloads to prevent overloading server
