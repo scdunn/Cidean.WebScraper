@@ -17,7 +17,7 @@ namespace Cidean.WebScraper
     {
 
         //Status events during scrape executing
-        public event EventHandler<ActioCompletedArgs> ActionCompleted;
+        public event EventHandler<ActionCompletedArgs> ActionCompleted;
 
         public DataMap DataMap;
 
