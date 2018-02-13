@@ -32,6 +32,7 @@ namespace Cidean.WebScraper
             DataMap map = DataMap.LoadFile(filename);
             Console.WriteLine("Data map {0} loaded successfully.", filename);
 
+            scraper.LoggedEvent += Scraper_LoggedEvent;
             scraper.Execute(map, Path.Combine(baseDirectory,"data.xml"));
 
             
@@ -40,6 +41,12 @@ namespace Cidean.WebScraper
             Console.ReadKey();
    
    
+        }
+
+        private static void Scraper_LoggedEvent(object sender, LoggedEventArgs e)
+        {
+            //log event too console
+            Console.WriteLine(e.TimeStamp.ToString() + ": " + e.Message);
         }
 
         static Program()

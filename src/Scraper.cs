@@ -17,7 +17,7 @@ namespace Cidean.WebScraper
     {
 
         //Status events during scrape executing
-        public event EventHandler<ActionCompletedArgs> ActionCompleted;
+        public event EventHandler<LoggedEventArgs> LoggedEvent;
 
         public DataMap DataMap;
 
@@ -43,8 +43,12 @@ namespace Cidean.WebScraper
 
             //only continue if datamap is defined
             if (DataMap == null)
+            {
+                LogEvent("Data Map is empty, cancel execution."); 
                 return;
+            }
 
+            
             XElement xmlRoot = new XElement(DataMap.Name);
 
             //loop all Urls
@@ -54,19 +58,24 @@ namespace Cidean.WebScraper
                 XElement xmlUrl = new XElement("Source", new XAttribute("Url",url));
                 
                 //crawl
-                Console.WriteLine("Grabbing {0}", url);
+                LogEvent("Fetching Document at " + url);
                 var document = GetHtmlDocument(url);
-                if (document != null)
+                if(document == null)
                 {
-                   
+                    LogEvent("Document is empty");
+                }
+                else
+                {
+                    LogEvent("Extracting Document data.");
                     //loop through all root data map items
-                    foreach(var rootMapItem in DataMap.DataMapItems)
+                    foreach (var rootMapItem in DataMap.DataMapItems)
                     {
+
                         if(rootMapItem.Type.ToLower() == "text")
                         {
                             string value = QueryElement(document.DocumentElement, rootMapItem.Path).TextContent;
                             xmlUrl.Add(new XElement(rootMapItem.Name, value.Trim()));
-
+                            LogEvent("Extracted element(" + rootMapItem.Path + ") as " + rootMapItem.Name + "=" + value.Trim());
                         }
 
                         //handle list map types (has child map items)
@@ -86,6 +95,7 @@ namespace Cidean.WebScraper
                                 {
                                     string value = QueryElement(elementListItem, listMapItem.Path).TextContent;
                                     xmlListItem.Add(new XElement(listMapItem.Name, value.Trim()));
+                                    LogEvent("Extracted element(" + rootMapItem.Path + ") as " + rootMapItem.Name + "=" + value.Trim());
                                 }
                                 xmlList.Add(xmlListItem);
                             }
@@ -100,20 +110,24 @@ namespace Cidean.WebScraper
                 }
                 xmlRoot.Add(xmlUrl);
                 //delay between next url grab in milliseconds
+                LogEvent("Delay for " + Delay + "ms");
                 System.Threading.Thread.Sleep(Delay);
 
             }
+            LogEvent("Writing xml file " + outputFile);
             xmlRoot.Save(outputFile);
+            LogEvent("Save Complete " + outputFile);
         }
         
 
         /// <summary>
-        /// Log scraping event
+        /// Log scraping action
         /// </summary>
         /// <param name="message"></param>
-        public void LogEvent(string message)
+        private void LogEvent(string message)
         {
-
+            if (LoggedEvent != null)
+                LoggedEvent(this, new LoggedEventArgs() { TimeStamp = DateTime.Now, Message = message });
         }
 
         /// <summary>

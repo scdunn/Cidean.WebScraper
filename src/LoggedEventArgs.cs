@@ -9,7 +9,7 @@ namespace Cidean.WebScraper
     /// <summary>
     /// Event arguments for a completed action during scraping.
     /// </summary>
-    public class ActionCompletedArgs
+    public class LoggedEventArgs
     {
         //timestamp of action
         public DateTime TimeStamp;
