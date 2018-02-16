@@ -36,8 +36,10 @@ namespace Cidean.WebScraper
         /// </summary>
         public void Execute(DataMap datamap, string outputFile)
         {
+            //set current datamap
             this.DataMap = datamap;
 
+            //update delay if defined
             if (DataMap.Delay > 0)
                 this.Delay = DataMap.Delay;
 
@@ -48,77 +50,86 @@ namespace Cidean.WebScraper
                 return;
             }
 
-            
+            //create root output element
             XElement xmlRoot = new XElement(DataMap.Name);
 
             //loop all Urls
             foreach (string url in DataMap.Urls)
             {
 
+                //create url output element
                 XElement xmlUrl = new XElement("Source", new XAttribute("Url",url));
                 
-                //crawl
+                //Fetch document and extract data
                 LogEvent("Fetching Document at " + url);
                 var document = GetHtmlDocument(url);
                 if(document == null)
-                {
                     LogEvent("Document is empty");
-                }
                 else
                 {
                     LogEvent("Extracting Document data.");
-                    //loop through all root data map items
-                    foreach (var rootMapItem in DataMap.DataMapItems)
-                    {
-
-                        if(rootMapItem.Type.ToLower() == "text")
-                        {
-                            string value = QueryElement(document.DocumentElement, rootMapItem.Path).TextContent;
-                            xmlUrl.Add(new XElement(rootMapItem.Name, value.Trim()));
-                            LogEvent("Extracted element(" + rootMapItem.Path + ") as " + rootMapItem.Name + "=" + value.Trim());
-                        }
-
-                        //handle list map types (has child map items)
-                        if (rootMapItem.Type.ToLower() == "list")
-                        { 
-                            
-                            //get all list item elements from from selector
-                            var elementList = QueryElements(document.DocumentElement, rootMapItem.Path);
-
-                            XElement xmlList = new XElement(rootMapItem.ListName);
-
-                            //loop through all elements and extract all datamapitems
-                            foreach(var elementListItem in elementList)
-                            {
-                                XElement xmlListItem = new XElement(rootMapItem.Name);
-                                foreach (var listMapItem in rootMapItem.DataMapItems)
-                                {
-                                    string value = QueryElement(elementListItem, listMapItem.Path).TextContent;
-                                    xmlListItem.Add(new XElement(listMapItem.Name, value.Trim()));
-                                    LogEvent("Extracted element(" + rootMapItem.Path + ") as " + rootMapItem.Name + "=" + value.Trim());
-                                }
-                                xmlList.Add(xmlListItem);
-                            }
-
-                            xmlUrl.Add(xmlList);
-                            
-                          
-                            
-                        }
-                        
-                    }
+                    //Extract Map Items
+                    ExecuteDataMapItems(DataMap.DataMapItems, document.DocumentElement, xmlUrl);
                 }
+
+                //add url output element to output root
                 xmlRoot.Add(xmlUrl);
+
                 //delay between next url grab in milliseconds
+                //to prevent overloading server.
                 LogEvent("Delay for " + Delay + "ms");
                 System.Threading.Thread.Sleep(Delay);
 
             }
-            LogEvent("Writing xml file " + outputFile);
+
+            //write output xml to file
+            LogEvent("Saving xml output file " + outputFile);
             xmlRoot.Save(outputFile);
-            LogEvent("Save Complete " + outputFile);
         }
         
+
+
+        /// <summary>
+        /// Execute child items within map item list
+        /// </summary>
+        private void ExecuteDataMapItems(List<DataMapItem> dataMapItems, IElement element, XElement output)
+        {
+            
+            //loop through all data map items
+            foreach (var dataMapItem in dataMapItems)
+            {
+                //handle text item
+                if (dataMapItem.Type.ToLower() == "text")
+                {
+                    string value = QueryElement(element, dataMapItem.Path).TextContent.Trim();
+                    output.Add(new XElement(dataMapItem.Name, value));
+                    LogEvent("Extracting path(" + dataMapItem.Path + ") to " + dataMapItem.Name + "=" + value);
+                }
+
+                //handle list map types (has child map items)
+                if (dataMapItem.Type.ToLower() == "list")
+                {
+                    //get all list item elements from from selector
+                    var elementList = QueryElements(element, dataMapItem.Path);
+                    
+                    //create list output xml element
+                    XElement xmlList = new XElement(dataMapItem.ListName);
+
+                    //loop through all elements and extract all datamapitems
+                    foreach (var elementListItem in elementList)
+                    {
+                        XElement xmlListItem = new XElement(dataMapItem.Name);
+                        ExecuteDataMapItems(dataMapItem.DataMapItems, elementListItem, xmlListItem);
+                        xmlList.Add(xmlListItem);
+                    }
+
+                    //add list to xml output element
+                    output.Add(xmlList);
+                    
+                }
+
+            }
+        }
 
         /// <summary>
         /// Log scraping action
