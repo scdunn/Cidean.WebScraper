@@ -63,9 +63,8 @@ namespace Cidean.WebScraper
                 //Fetch document and extract data
                 LogEvent("Fetching Document at " + url);
                 var document = GetHtmlDocument(url);
-                if(document == null)
-                    LogEvent("Document is empty");
-                else
+
+                if(document != null)
                 {
                     LogEvent("Extracting Document data.");
                     //Extract Map Items
@@ -114,6 +113,7 @@ namespace Cidean.WebScraper
                     
                     //create list output xml element
                     XElement xmlList = new XElement(dataMapItem.ListName);
+                    LogEvent("Creating List..." + dataMapItem.ListName);
 
                     //loop through all elements and extract all datamapitems
                     foreach (var elementListItem in elementList)
@@ -172,6 +172,7 @@ namespace Cidean.WebScraper
             }
             catch (Exception ex)
             {
+                LogEvent("File " + uri + " not found or document is empty.");
                 //return null if any exception occurs
                 return null;
             }
