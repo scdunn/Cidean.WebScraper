@@ -100,9 +100,24 @@ namespace Cidean.WebScraper
                 //handle text item
                 if (dataMapItem.Type.ToLower() == "text")
                 {
-                    string value = QueryElement(element, dataMapItem.Path).TextContent.Trim();
+                    IElement valueElement = QueryElement(element, dataMapItem.Path);
+                    string value = ""; //default empty value
+
+                    //check if value was found for path
+                    if(valueElement != null)
+                    { 
+                        value = valueElement.TextContent.Trim();
+                        LogEvent("Extracting path(" + dataMapItem.Path + ") to " + dataMapItem.Name + "=" + value);
+                    }
+                    else
+                    {
+                        //element does not exist, path may be incorrect, value will
+                        //be written as empty text.
+                        LogEvent("Path " + dataMapItem.Path + " does not exist.");
+                    }
+
+                    //write xml output element for value
                     output.Add(new XElement(dataMapItem.Name, value));
-                    LogEvent("Extracting path(" + dataMapItem.Path + ") to " + dataMapItem.Name + "=" + value);
                 }
 
                 //handle list map types (has child map items)
