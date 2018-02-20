@@ -125,22 +125,29 @@ namespace Cidean.WebScraper
                 {
                     //get all list item elements from from selector
                     var elementList = QueryElements(element, dataMapItem.Path);
-                    
-                    //create list output xml element
-                    XElement xmlList = new XElement(dataMapItem.ListName);
-                    LogEvent("Creating List..." + dataMapItem.ListName);
 
-                    //loop through all elements and extract all datamapitems
-                    foreach (var elementListItem in elementList)
+                    if (elementList.Count!=0)
                     {
-                        XElement xmlListItem = new XElement(dataMapItem.Name);
-                        ExecuteDataMapItems(dataMapItem.DataMapItems, elementListItem, xmlListItem);
-                        xmlList.Add(xmlListItem);
-                    }
+                        //create list output xml element
+                        XElement xmlList = new XElement(dataMapItem.ListName);
+                        LogEvent("Creating List..." + dataMapItem.ListName);
 
-                    //add list to xml output element
-                    output.Add(xmlList);
-                    
+                        //loop through all elements and extract all datamapitems
+                        foreach (var elementListItem in elementList)
+                        {
+                            XElement xmlListItem = new XElement(dataMapItem.Name);
+                            ExecuteDataMapItems(dataMapItem.DataMapItems, elementListItem, xmlListItem);
+                            xmlList.Add(xmlListItem);
+                        }
+
+                        //add list to xml output element
+                        output.Add(xmlList);
+                    }
+                    else
+                    {
+                        LogEvent("No list of elements for path " + dataMapItem.Path + " was found.");
+
+                    }
                 }
 
             }
