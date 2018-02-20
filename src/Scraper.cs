@@ -69,10 +69,11 @@ namespace Cidean.WebScraper
                     LogEvent("Extracting Document data.");
                     //Extract Map Items
                     ExecuteDataMapItems(DataMap.DataMapItems, document.DocumentElement, xmlUrl);
+                    //add url output element to output root
+                    xmlRoot.Add(xmlUrl);
                 }
 
-                //add url output element to output root
-                xmlRoot.Add(xmlUrl);
+                
 
                 //delay between next url grab in milliseconds
                 //to prevent overloading server.
