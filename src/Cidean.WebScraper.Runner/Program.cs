@@ -25,16 +25,22 @@ namespace Cidean.WebScraper.Runner
             Console.WriteLine(LineDivider);
             Console.WriteLine("Please use this application responsibly and respect all copyrighted material.");
 
-            //Todo: allow input of datamap file, hardcode for now
+            //Todo: ADD MORE ROBUST CHECKING OF ARGS
+            if (args.Length == 0)
+                return;
 
-            string filename = Path.Combine(baseDirectory, "datamaps\\amazon.xml");
+            //grab map filename and output filename from command line args
+            string dataMapFile = args[1];
+            string dataOutFile = args[3];
+
+            string filename = Path.Combine(baseDirectory, dataMapFile);
 
             Scraper scraper = new Scraper();
             DataMap map = DataMap.LoadFile(filename);
             Console.WriteLine("Data map {0} loaded successfully.", filename);
 
             scraper.LoggedEvent += Scraper_LoggedEvent;
-            scraper.Execute(map, Path.Combine(baseDirectory, "data.xml"));
+            scraper.Execute(map, Path.Combine(baseDirectory, dataOutFile));
 
 
             //Exit Application
