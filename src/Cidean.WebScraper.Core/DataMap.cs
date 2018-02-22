@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Serialization;
 
-namespace Cidean.WebScraper
+namespace Cidean.WebScraper.Core
 {
     /// <summary>
     /// Definition file for content to scrape and output configuration

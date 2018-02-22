@@ -8,7 +8,7 @@ using System.Xml.Linq;
 using AngleSharp.Dom;
 using System.Net;
 
-namespace Cidean.WebScraper
+namespace Cidean.WebScraper.Core
 {
     /// <summary>
     /// Scraping manager for executing scrap and loading maps

@@ -4,10 +4,11 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Cidean.WebScraper.Core;
 
-namespace Cidean.WebScraper
+namespace Cidean.WebScraper.Runner
 {
-    class Program
+    public class Program
     {
 
         //text divider for a line in console ie '============='
@@ -25,7 +26,7 @@ namespace Cidean.WebScraper
             Console.WriteLine("Please use this application responsibly and respect all copyrighted material.");
 
             //Todo: allow input of datamap file, hardcode for now
-       
+
             string filename = Path.Combine(baseDirectory, "datamaps\\amazon.xml");
 
             Scraper scraper = new Scraper();
@@ -33,14 +34,14 @@ namespace Cidean.WebScraper
             Console.WriteLine("Data map {0} loaded successfully.", filename);
 
             scraper.LoggedEvent += Scraper_LoggedEvent;
-            scraper.Execute(map, Path.Combine(baseDirectory,"data.xml"));
+            scraper.Execute(map, Path.Combine(baseDirectory, "data.xml"));
 
-            
+
             //Exit Application
             Console.WriteLine("Press any key to exit.");
             Console.ReadKey();
-   
-   
+
+
         }
 
         private static void Scraper_LoggedEvent(object sender, LoggedEventArgs e)
@@ -52,11 +53,11 @@ namespace Cidean.WebScraper
         static Program()
         {
             //set base directory given environment
-            #if DEBUG
-                baseDirectory = AppDomain.CurrentDomain.BaseDirectory + "..\\..\\";
-            #else
+#if DEBUG
+            baseDirectory = AppDomain.CurrentDomain.BaseDirectory + "..\\..\\";
+#else
                 baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
-            #endif
+#endif
         }
 
     }

@@ -1,0 +1,128 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Amazon>
+  <Source Url="C:\\Users\\ME\\Files\\Work\\Source\\Cidean.WebScraper\\src\\Cidean.WebScraper.Runner\\DataPages\\amazon-mystery-list.html">
+    <Title>Best Sellers in Mystery, Thriller &amp; Suspense</Title>
+    <Books>
+      <Book>
+        <Rank>1.</Rank>
+        <Title>A Dark Lure</Title>
+        <Byline>by Loreth Anne White</Byline>
+        <Price>$4.99</Price>
+      </Book>
+      <Book>
+        <Rank>2.</Rank>
+        <Title>Bum Rap</Title>
+        <Byline>by Paul Levine</Byline>
+        <Price>$4.99</Price>
+      </Book>
+      <Book>
+        <Rank>3.</Rank>
+        <Title>The Girl on the Train: A Novel</Title>
+        <Byline>by Paula Hawkins</Byline>
+        <Price>$6.99</Price>
+      </Book>
+      <Book>
+        <Rank>4.</Rank>
+        <Title>Darkness Brutal (The Dark Cycle Book 1)</Title>
+        <Byline>by Rachel A. Marks</Byline>
+        <Price>$4.99</Price>
+      </Book>
+      <Book>
+        <Rank>5.</Rank>
+        <Title>Pines (The Wayward Pines Trilogy, Boo...</Title>
+        <Byline>by Blake Crouch</Byline>
+        <Price>$3.99</Price>
+      </Book>
+      <Book>
+        <Rank>6.</Rank>
+        <Title>The Martian: A Novel</Title>
+        <Byline>by Andy Weir</Byline>
+        <Price>$5.99</Price>
+      </Book>
+      <Book>
+        <Rank>7.</Rank>
+        <Title>Finders Keepers: A Novel</Title>
+        <Byline>by Stephen King</Byline>
+        <Price>$14.99</Price>
+      </Book>
+      <Book>
+        <Rank>8.</Rank>
+        <Title>Luckiest Girl Alive: A Novel</Title>
+        <Byline>by Jessica Knoll</Byline>
+        <Price>$11.99</Price>
+      </Book>
+      <Book>
+        <Rank>9.</Rank>
+        <Title>Memory Man (Amos Decker series)</Title>
+        <Byline>by David Baldacci</Byline>
+        <Price>$13.99</Price>
+      </Book>
+      <Book>
+        <Rank>10.</Rank>
+        <Title>The Girl on the Train: A Novel</Title>
+        <Byline>by Paula Hawkins</Byline>
+        <Price>$23.95</Price>
+      </Book>
+      <Book>
+        <Rank>11.</Rank>
+        <Title>Radiant Angel (John Corey Book 7)</Title>
+        <Byline>by Nelson DeMille</Byline>
+        <Price>$12.99</Price>
+      </Book>
+      <Book>
+        <Rank>12.</Rank>
+        <Title>Wayward (The Wayward Pines Trilogy, B...</Title>
+        <Byline>by Blake Crouch</Byline>
+        <Price>$5.99</Price>
+      </Book>
+      <Book>
+        <Rank>13.</Rank>
+        <Title>Stranger Child</Title>
+        <Byline>by Rachel Abbott</Byline>
+        <Price>$1.99</Price>
+      </Book>
+      <Book>
+        <Rank>14.</Rank>
+        <Title>The Girl on the Train</Title>
+        <Byline>by Paula Hawkins</Byline>
+        <Price>$12.89</Price>
+      </Book>
+      <Book>
+        <Rank>15.</Rank>
+        <Title>The Last Town (The Wayward Pines Tril...</Title>
+        <Byline>by Blake Crouch</Byline>
+        <Price>$5.99</Price>
+      </Book>
+      <Book>
+        <Rank>16.</Rank>
+        <Title>Silent Scream: An edge of your seat s...</Title>
+        <Byline>by Angela Marsons</Byline>
+        <Price>$0.99</Price>
+      </Book>
+      <Book>
+        <Rank>17.</Rank>
+        <Title>Finders Keepers: A Novel</Title>
+        <Byline>by Stephen King</Byline>
+        <Price>$20.95</Price>
+      </Book>
+      <Book>
+        <Rank>18.</Rank>
+        <Title>14th Deadly Sin (Women's Murder Club)</Title>
+        <Byline>by James Patterson</Byline>
+        <Price>$9.99</Price>
+      </Book>
+      <Book>
+        <Rank>19.</Rank>
+        <Title>Spiraled (Callahan &amp; McLane Book 3)</Title>
+        <Byline>by Kendra Elliot</Byline>
+        <Price>$4.99</Price>
+      </Book>
+      <Book>
+        <Rank>20.</Rank>
+        <Title>The Martian</Title>
+        <Byline>by Andy Weir</Byline>
+        <Price>$9.00</Price>
+      </Book>
+    </Books>
+  </Source>
+</Amazon>

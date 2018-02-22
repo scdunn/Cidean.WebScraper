@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Cidean.WebScraper")]
+[assembly: AssemblyTitle("Cidean.WebScraper.Runner")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Cidean, LLC")]
-[assembly: AssemblyProduct("Cidean.WebScraper")]
+[assembly: AssemblyCompany("")]
+[assembly: AssemblyProduct("Cidean.WebScraper.Runner")]
 [assembly: AssemblyCopyright("Copyright ©  2018")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("e75d65ed-c74d-46b5-bd6e-6793a6d8e9b9")]
+[assembly: Guid("3c7c4c0c-6018-4414-8172-bda8c26ae05c")]
 
 // Version information for an assembly consists of the following four values:
 //
