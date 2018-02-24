@@ -8,63 +8,122 @@ using Cidean.WebScraper.Core;
 
 namespace Cidean.WebScraper.Runner
 {
-    public class Program
+    internal class Program
     {
 
         //text divider for a line in console ie '============='
-        static string LineDivider = new string('=', 120);
-        static readonly string baseDirectory;
+        private static string LineDivider = new string('=', 120);
+
+        //base directory and all files relative to this dir
+        private static readonly string baseDirectory;
+
+        //default static constructor
+        static Program()
+        {
+            //set base directory given environment
+            #if DEBUG
+                baseDirectory = AppDomain.CurrentDomain.BaseDirectory + "..\\..\\";
+            #else
+                baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
+            #endif
+        }
 
         /// <summary>
         /// main console start
         /// </summary>
         /// <param name="args"></param>
-        static void Main(string[] args)
+        internal static void Main(string[] args)
         {
+            //data map file
+            string dataMapFile = "";
+
+            //data output file
+            string dataOutFile = "";
+
             Console.WriteLine("Welcome to Cidean's WebScraper.");
             Console.WriteLine(LineDivider);
             Console.WriteLine("Please use this application responsibly and respect all copyrighted material.");
 
-            //Todo: ADD MORE ROBUST CHECKING OF ARGS
-            if (args.Length == 0)
+            try
+            {
+                //Check for command arguments, required for continuing
+                if (args.Length == 0)
+                    throw new ArgumentNullException("No arguments set.");
+
+                //argument index for looping
+                int argsIndex = 0;
+
+                //grab command arguments and parameters
+                while (true)
+                {
+                    switch (args[argsIndex].ToLower())
+                    {
+                        //data map file command
+                        case "-m":
+                            dataMapFile = args[argsIndex + 1];
+                            Console.WriteLine("Data Map File: " + dataMapFile);
+                            argsIndex++;
+                            break;
+                        //data output file command
+                        case "-o":
+                            dataOutFile = args[argsIndex + 1];
+                            Console.WriteLine("Data Output File: " + dataOutFile);
+                            argsIndex++;
+                            break;
+                        case "-a"://test: remove
+                            break;
+                        case "-r"://test: remove
+                            break;
+                        default:
+                            //bad argument
+                            throw new ArgumentException("Unknown argument " + args[argsIndex]);
+                    }
+
+                    argsIndex++;
+                    //check if all arguments have been processed.
+                    if (argsIndex >= args.Length) break;
+                }
+                
+                //set file to relative path
+                dataMapFile = Path.Combine(baseDirectory, dataMapFile);
+
+                //initialize web scraper and load data map
+                Scraper scraper = new Scraper();
+                scraper.LoggedEvent += Scraper_LoggedEvent;
+
+                //create datamap from xml file
+                DataMap map = DataMap.LoadFile(dataMapFile);
+                Console.WriteLine("Data map {0} loaded successfully.", dataMapFile);
+
+                //execute webscraping
+                scraper.Execute(map, Path.Combine(baseDirectory, dataOutFile));
+            }
+            catch (Exception ex)
+            {
+                //arguments didn't work out
+                Console.WriteLine(ex.Message);
+                Console.WriteLine("Exiting WebScraper Runner.");
+                Console.ReadKey();
                 return;
-
-            //grab map filename and output filename from command line args
-            string dataMapFile = args[1];
-            string dataOutFile = args[3];
-
-            string filename = Path.Combine(baseDirectory, dataMapFile);
-
-            Scraper scraper = new Scraper();
-            DataMap map = DataMap.LoadFile(filename);
-            Console.WriteLine("Data map {0} loaded successfully.", filename);
-
-            scraper.LoggedEvent += Scraper_LoggedEvent;
-            scraper.Execute(map, Path.Combine(baseDirectory, dataOutFile));
-
-
-            //Exit Application
-            Console.WriteLine("Press any key to exit.");
-            Console.ReadKey();
-
+            }
+            finally
+            {
+                //exit application
+                Console.WriteLine("Press any key to exit.");
+                Console.ReadKey();
+            }
+            
 
         }
 
+        //Event handler for scraping events.  Log to console.
         private static void Scraper_LoggedEvent(object sender, LoggedEventArgs e)
         {
-            //log event too console
+            //log event to console
             Console.WriteLine(e.TimeStamp.ToString() + ": " + e.Message);
         }
 
-        static Program()
-        {
-            //set base directory given environment
-#if DEBUG
-            baseDirectory = AppDomain.CurrentDomain.BaseDirectory + "..\\..\\";
-#else
-                baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
-#endif
-        }
+        
 
     }
 }
