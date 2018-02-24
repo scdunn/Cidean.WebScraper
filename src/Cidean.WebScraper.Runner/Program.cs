@@ -60,15 +60,21 @@ namespace Cidean.WebScraper.Runner
                     {
                         //data map file command
                         case "-m":
-                            dataMapFile = args[argsIndex + 1];
-                            Console.WriteLine("Data Map File: " + dataMapFile);
-                            argsIndex++;
+                            if (((args.Length) > (argsIndex)) && (!args[argsIndex + 1].StartsWith("-")))
+                            {
+                                dataMapFile = args[argsIndex + 1];
+                                Console.WriteLine("Data Map File: " + dataMapFile);
+                                argsIndex++;
+                            }
                             break;
                         //data output file command
                         case "-o":
-                            dataOutFile = args[argsIndex + 1];
-                            Console.WriteLine("Data Output File: " + dataOutFile);
-                            argsIndex++;
+                            if (((args.Length) > (argsIndex)) && (!args[argsIndex + 1].StartsWith("-")))
+                            {
+                                dataOutFile = args[argsIndex + 1];
+                                Console.WriteLine("Data Output File: " + dataOutFile);
+                                argsIndex++;
+                            }
                             break;
                         case "-a"://test: remove
                             break;
@@ -83,7 +89,10 @@ namespace Cidean.WebScraper.Runner
                     //check if all arguments have been processed.
                     if (argsIndex >= args.Length) break;
                 }
-                
+
+                if (string.IsNullOrEmpty(dataMapFile) || string.IsNullOrEmpty(dataOutFile))
+                    throw new ArgumentNullException("Missing Datamap file or Output file.");
+
                 //set file to relative path
                 dataMapFile = Path.Combine(baseDirectory, dataMapFile);
 
