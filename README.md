@@ -9,6 +9,9 @@ Contains the core processing logic for scraping data from a webpage.
 ### Cidean.WebScraper.Runner
 Utilizes the Cidean.WebScraper.Core to run a console application executing the scrape process.
 
+Usage:
+>webscrape -m "example-datamap.xml" -o "example-output.xml"
+
 ### Other
 Other projects will be included showcasing using the scraper in a web application.
 
