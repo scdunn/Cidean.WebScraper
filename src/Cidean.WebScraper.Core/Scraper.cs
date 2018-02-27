@@ -24,7 +24,9 @@ namespace Cidean.WebScraper.Core
         //Delay between url downloads to prevent overloading server
         public int Delay; //milliseconds
         
-
+        /// <summary>
+        /// Default contructor to set defaults
+        /// </summary>
         public Scraper()
         {
             //default delay between page downloads
@@ -87,8 +89,6 @@ namespace Cidean.WebScraper.Core
             xmlRoot.Save(outputFile);
         }
         
-
-
         /// <summary>
         /// Execute child items within map item list
         /// </summary>
@@ -200,9 +200,7 @@ namespace Cidean.WebScraper.Core
                 return null;
             }
         }
-
         
-
         /// <summary>
         /// Query an element within a document given the selector
         /// </summary>
@@ -216,6 +214,12 @@ namespace Cidean.WebScraper.Core
             return element;
         }
 
+        /// <summary>
+        /// Query ALL elements within a document given the selector
+        /// </summary>
+        /// <param name="parent"></param>
+        /// <param name="selector"></param>
+        /// <returns></returns>
         private List<IElement> QueryElements(IElement parent, string selector)
         {
             var elements = parent.QuerySelectorAll(selector);
