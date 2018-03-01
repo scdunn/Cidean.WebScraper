@@ -107,6 +107,8 @@ namespace Cidean.WebScraper.Runner
                 //set file to relative path
                 dataMapFile = Path.Combine(baseDirectory, dataMapFile);
 
+                dataOutFile = Path.Combine(baseDirectory, dataOutFile);
+
                 //initialize web scraper and load data map
                 Scraper scraper = new Scraper();
                 scraper.LoggedEvent += Scraper_LoggedEvent;
