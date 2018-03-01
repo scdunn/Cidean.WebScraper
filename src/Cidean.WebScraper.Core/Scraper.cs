@@ -36,8 +36,10 @@ namespace Cidean.WebScraper.Core
         /// <summary>
         /// Execute the scrap of data from urls
         /// </summary>
-        public void Execute(DataMap datamap, string outputFile)
+        public void Execute(DataMap datamap, string outputRootPath)
         {
+            string dataPath;
+
             //set current datamap
             this.DataMap = datamap;
 
@@ -49,6 +51,27 @@ namespace Cidean.WebScraper.Core
             if (DataMap == null)
             {
                 LogEvent("Data Map is empty, cancel execution."); 
+                return;
+            }
+
+
+            //create output folder if not already existing
+            //and data folder will be timestamped
+            //and auto created
+            try {
+                
+                if (!Directory.Exists(outputRootPath))
+                        Directory.CreateDirectory(outputRootPath);
+
+                //generate timestamped data fold to house xml and other data
+                //for scrape.
+                dataPath = Path.Combine(outputRootPath, this.DataMap.Name + "-" + DateTime.Now.ToFileTimeUtc().ToString());
+                Directory.CreateDirectory(dataPath);
+
+            }
+            catch (Exception exOutputPath)
+            {
+                LogEvent("Output folder could not be created.");
                 return;
             }
 
@@ -83,10 +106,12 @@ namespace Cidean.WebScraper.Core
                 System.Threading.Thread.Sleep(Delay);
 
             }
+            
 
             //write output xml to file
-            LogEvent("Saving xml output file " + outputFile);
-            xmlRoot.Save(outputFile);
+            LogEvent("Saving xml output file.");
+            xmlRoot.Save(Path.Combine(dataPath, "data.xml"));
+
         }
         
         /// <summary>
@@ -227,5 +252,6 @@ namespace Cidean.WebScraper.Core
             return elements.ToList();
         }
 
+        
     }
 }
