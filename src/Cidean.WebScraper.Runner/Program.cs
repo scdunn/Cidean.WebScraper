@@ -40,6 +40,9 @@ namespace Cidean.WebScraper.Runner
             //data output file
             string dataOutFile = "";
 
+            //page download delay
+            int delay = 0;
+
             Console.WriteLine("Welcome to Cidean's WebScraper.");
             Console.WriteLine(LineDivider);
             Console.WriteLine("Please use this application responsibly and respect all copyrighted material.");
@@ -76,7 +79,15 @@ namespace Cidean.WebScraper.Runner
                                 argsIndex++;
                             }
                             break;
-                        case "-a"://test: remove
+                        //delay between page downloads
+                        case "-d":
+                            if (((args.Length) > (argsIndex)) && (!args[argsIndex + 1].StartsWith("-")))
+                            {
+                                if (!int.TryParse(args[argsIndex + 1], out delay))
+                                    throw new ArgumentException("Delay is not an number.");
+                                Console.WriteLine("Data Output File: " + dataOutFile);
+                                argsIndex++;
+                            }
                             break;
                         case "-r"://test: remove
                             break;
@@ -99,6 +110,7 @@ namespace Cidean.WebScraper.Runner
                 //initialize web scraper and load data map
                 Scraper scraper = new Scraper();
                 scraper.LoggedEvent += Scraper_LoggedEvent;
+                scraper.Delay = delay;
 
                 //create datamap from xml file
                 DataMap map = DataMap.LoadFile(dataMapFile);
