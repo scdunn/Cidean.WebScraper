@@ -21,6 +21,9 @@ namespace Cidean.WebScraper.Core
 
         public DataMap DataMap;
 
+        public string OutputRootPath;
+        public string DataPath;
+
         //Delay between url downloads to prevent overloading server
         public int Delay; //milliseconds
         
@@ -38,7 +41,8 @@ namespace Cidean.WebScraper.Core
         /// </summary>
         public void Execute(DataMap datamap, string outputRootPath)
         {
-            string dataPath;
+            //set root output path for data/images
+            this.OutputRootPath = outputRootPath;
 
             //set current datamap
             this.DataMap = datamap;
@@ -60,13 +64,13 @@ namespace Cidean.WebScraper.Core
             //and auto created
             try {
                 
-                if (!Directory.Exists(outputRootPath))
-                        Directory.CreateDirectory(outputRootPath);
+                if (!Directory.Exists(this.OutputRootPath))
+                        Directory.CreateDirectory(this.OutputRootPath);
 
                 //generate timestamped data fold to house xml and other data
                 //for scrape.
-                dataPath = Path.Combine(outputRootPath, this.DataMap.Name + "-" + DateTime.Now.ToFileTimeUtc().ToString());
-                Directory.CreateDirectory(dataPath);
+                this.DataPath = Path.Combine(this.OutputRootPath, this.DataMap.Name + "-" + DateTime.Now.ToFileTimeUtc().ToString());
+                Directory.CreateDirectory(this.DataPath);
 
             }
             catch (Exception exOutputPath)
@@ -110,7 +114,7 @@ namespace Cidean.WebScraper.Core
 
             //write output xml to file
             LogEvent("Saving xml output file.");
-            xmlRoot.Save(Path.Combine(dataPath, "data.xml"));
+            xmlRoot.Save(Path.Combine(this.DataPath, "data.xml"));
 
         }
         
@@ -150,13 +154,18 @@ namespace Cidean.WebScraper.Core
                 if (dataMapItem.Type.ToLower() == "image")
                 {
                     IElement valueElement = QueryElement(element, dataMapItem.Path);
-                    string value = ""; //default empty value
+                    string src = ""; 
+                    string value = "";
 
                     //check if value was found for path
                     if (valueElement != null)
                     {
-                        value = valueElement.GetAttribute("src");
+                        src = valueElement.GetAttribute("src");
+                        value = Path.GetFileName(src);
+
                         LogEvent("Extracting path(" + dataMapItem.Path + ") to " + dataMapItem.Name + "=" + value);
+                        LogEvent("Download image..." + src);
+                        DownloadImage(src, value);
                     }
                     else
                     {
@@ -304,7 +313,7 @@ namespace Cidean.WebScraper.Core
 
                     // if the remote file was found, download oit
                     using (Stream inputStream = response.GetResponseStream())
-                    using (Stream outputStream = File.OpenWrite(fileName))
+                    using (Stream outputStream = File.OpenWrite(Path.Combine(this.DataPath,fileName)))
                     {
                         byte[] buffer = new byte[4096];
                         int bytesRead;
@@ -323,7 +332,7 @@ namespace Cidean.WebScraper.Core
                 LogEvent(ex.Message + "  " + url);
                 return false;
             }
-
+            
         }
 
     }
