@@ -178,6 +178,44 @@ namespace Cidean.WebScraper.Core
                     output.Add(new XElement(dataMapItem.Name, value));
                 }
 
+                //handle link item--follow page
+                if (dataMapItem.Type.ToLower() == "link")
+                {
+                    IElement valueElement = QueryElement(element, dataMapItem.Path);
+                    string value = ""; //default empty value
+
+                    //check if value was found for path
+                    if (valueElement != null)
+                    {
+                        value = valueElement.GetAttribute("href");
+                        LogEvent("Extracting path(" + dataMapItem.Path + ") to " + dataMapItem.Name + "=" + value);
+
+                        //Fetch document and extract data
+                        LogEvent("Fetching Document at " + value);
+                        var document = GetHtmlDocument(value);
+
+                        if (document != null)
+                        {
+                            LogEvent("Extracting Document data.");
+                            //Extract Map Items
+                            var xmlLink = new XElement(dataMapItem.Name);
+                            
+                            ExecuteDataMapItems(dataMapItem.DataMapItems, document.DocumentElement, xmlLink);
+                            //write xml output element for value
+                            output.Add(xmlLink);
+                        }
+                    }
+                    else
+                    {
+                        //element does not exist, path may be incorrect, value will
+                        //be written as empty text.
+                        LogEvent("Path " + dataMapItem.Path + " does not exist.");
+                    }
+                    
+
+
+                }
+
                 //handle list map types (has child map items)
                 if (dataMapItem.Type.ToLower() == "list")
                 {
