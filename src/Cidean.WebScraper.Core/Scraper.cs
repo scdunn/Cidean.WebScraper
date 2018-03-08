@@ -332,7 +332,13 @@ namespace Cidean.WebScraper.Core
                 LogEvent(ex.Message + "  " + url);
                 return false;
             }
-            
+            finally
+            {
+                //delay between next url grab in milliseconds
+                //to prevent overloading server.
+                LogEvent("Delay for " + Delay + "ms");
+                System.Threading.Thread.Sleep(this.Delay);
+            }
         }
 
     }
