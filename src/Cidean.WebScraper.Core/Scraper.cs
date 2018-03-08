@@ -121,18 +121,22 @@ namespace Cidean.WebScraper.Core
         /// <summary>
         /// Execute child items within map item list
         /// </summary>
-        private void ExecuteDataMapItems(List<DataMapItem> dataMapItems, IElement element, XElement output)
+        private void ExecuteDataMapItems(List<DataMapItem> dataMapItems, IElement sourceElement, XElement output)
         {
-            
+            var element = sourceElement;
+
             //loop through all data map items
             foreach (var dataMapItem in dataMapItems)
             {
+                
+
+                
                 //handle text item
                 if (dataMapItem.Type.ToLower() == "text")
                 {
                     IElement valueElement = QueryElement(element, dataMapItem.Path);
                     string value = ""; //default empty value
-
+                    
                     //check if value was found for path
                     if(valueElement != null)
                     { 
@@ -304,7 +308,12 @@ namespace Cidean.WebScraper.Core
         /// <returns></returns>
         private IElement QueryElement(IElement parent, string selector)
         {
-            var element = parent.QuerySelector(selector);
+            IElement element;
+
+            if (selector == ".")
+                element = parent;
+            else
+                element = parent.QuerySelector(selector);
             if (element == null) return null;
             return element;
         }
