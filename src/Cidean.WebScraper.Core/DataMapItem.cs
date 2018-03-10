@@ -31,6 +31,10 @@ namespace Cidean.WebScraper.Core
         [XmlAttribute("ListName")]
         public string ListName { get; set; }
 
+        //Max Items to get (from list type)
+        [XmlAttribute("MaxItems")]
+        public int MaxItems { get; set; }
+
         //Child Map Items
         [XmlArrayItem(ElementName = "DataMapItem")]
         public List<DataMapItem> DataMapItems { get; set; }

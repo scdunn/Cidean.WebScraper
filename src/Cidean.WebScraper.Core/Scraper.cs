@@ -224,7 +224,7 @@ namespace Cidean.WebScraper.Core
                 if (dataMapItem.Type.ToLower() == "list")
                 {
                     //get all list item elements from from selector
-                    var elementList = QueryElements(element, dataMapItem.Path);
+                    var elementList = QueryElements(element, dataMapItem.Path, dataMapItem.MaxItems);
 
                     if (elementList.Count!=0)
                     {
@@ -324,11 +324,14 @@ namespace Cidean.WebScraper.Core
         /// <param name="parent"></param>
         /// <param name="selector"></param>
         /// <returns></returns>
-        private List<IElement> QueryElements(IElement parent, string selector)
+        private List<IElement> QueryElements(IElement parent, string selector, int maxItems)
         {
             var elements = parent.QuerySelectorAll(selector);
             if (elements == null) return null;
-            return elements.ToList();
+            if (maxItems > 0)
+                return elements.Take(maxItems).ToList();
+            else
+                return elements.ToList();
         }
 
 
