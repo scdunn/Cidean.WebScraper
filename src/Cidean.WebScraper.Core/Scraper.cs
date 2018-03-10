@@ -97,7 +97,7 @@ namespace Cidean.WebScraper.Core
                 {
                     LogEvent("Extracting Document data.");
                     //Extract Map Items
-                    ExecuteDataMapItems(DataMap.DataMapItems, document.DocumentElement, xmlUrl);
+                    ExecuteDataMapItems(DataMap.DataMapItems, document.DocumentElement, xmlUrl, url);
                     //add url output element to output root
                     xmlRoot.Add(xmlUrl);
                 }
@@ -121,9 +121,11 @@ namespace Cidean.WebScraper.Core
         /// <summary>
         /// Execute child items within map item list
         /// </summary>
-        private void ExecuteDataMapItems(List<DataMapItem> dataMapItems, IElement sourceElement, XElement output)
+        private void ExecuteDataMapItems(List<DataMapItem> dataMapItems, IElement sourceElement, XElement output, string url)
         {
             var element = sourceElement;
+
+
 
             //loop through all data map items
             foreach (var dataMapItem in dataMapItems)
@@ -169,6 +171,8 @@ namespace Cidean.WebScraper.Core
 
                         LogEvent("Extracting path(" + dataMapItem.Path + ") to " + dataMapItem.Name + "=" + value);
                         LogEvent("Download image..." + src);
+                        if (src.StartsWith("/"))
+                            src = (new Uri(url)).GetLeftPart(UriPartial.Authority) + src;
                         DownloadImage(src, value);
                     }
                     else
@@ -204,7 +208,7 @@ namespace Cidean.WebScraper.Core
                             //Extract Map Items
                             var xmlLink = new XElement(dataMapItem.Name);
                             
-                            ExecuteDataMapItems(dataMapItem.DataMapItems, document.DocumentElement, xmlLink);
+                            ExecuteDataMapItems(dataMapItem.DataMapItems, document.DocumentElement, xmlLink, value);
                             //write xml output element for value
                             output.Add(xmlLink);
                         }
@@ -236,7 +240,7 @@ namespace Cidean.WebScraper.Core
                         foreach (var elementListItem in elementList)
                         {
                             XElement xmlListItem = new XElement(dataMapItem.Name);
-                            ExecuteDataMapItems(dataMapItem.DataMapItems, elementListItem, xmlListItem);
+                            ExecuteDataMapItems(dataMapItem.DataMapItems, elementListItem, xmlListItem, url);
                             xmlList.Add(xmlListItem);
                         }
 
