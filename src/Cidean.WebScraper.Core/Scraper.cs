@@ -102,12 +102,7 @@ namespace Cidean.WebScraper.Core
                     xmlRoot.Add(xmlUrl);
                 }
 
-                
 
-                //delay between next url grab in milliseconds
-                //to prevent overloading server.
-                LogEvent("Delay for " + Delay + "ms");
-                System.Threading.Thread.Sleep(Delay);
 
             }
             
@@ -124,13 +119,12 @@ namespace Cidean.WebScraper.Core
         private void ExecuteDataMapItems(List<DataMapItem> dataMapItems, IElement sourceElement, XElement output, string url)
         {
             var element = sourceElement;
-
-
+            var dataMapItemIndex = 0;
+            
 
             //loop through all data map items
             foreach (var dataMapItem in dataMapItems)
             {
-                
 
                 
                 //handle text item
@@ -141,8 +135,15 @@ namespace Cidean.WebScraper.Core
                     
                     //check if value was found for path
                     if(valueElement != null)
-                    { 
-                        value = valueElement.TextContent.Trim();
+                    {
+                        //handle image source url vs file download
+                        //text type on image tag will get src
+                        if (valueElement.TagName.ToLower() == "img")
+                        {
+                            value = (new Uri(url)).GetLeftPart(UriPartial.Authority) + valueElement.GetAttribute("src");
+                        }
+                        else
+                            value = valueElement.TextContent.Trim();
                         LogEvent("Extracting path(" + dataMapItem.Path + ") to " + dataMapItem.Name + "=" + value);
                     }
                     else
@@ -206,7 +207,7 @@ namespace Cidean.WebScraper.Core
                         {
                             LogEvent("Extracting Document data.");
                             //Extract Map Items
-                            var xmlLink = new XElement(dataMapItem.Name);
+                            var xmlLink = new XElement(dataMapItem.Name, new XAttribute("Url", value));
                             
                             ExecuteDataMapItems(dataMapItem.DataMapItems, document.DocumentElement, xmlLink, value);
                             //write xml output element for value
@@ -234,7 +235,7 @@ namespace Cidean.WebScraper.Core
                     {
                         //create list output xml element
                         XElement xmlList = new XElement(dataMapItem.ListName);
-                        LogEvent("Creating List..." + dataMapItem.ListName);
+                        LogEvent("Creating List..." + dataMapItem.ListName + "...(count:" + elementList.Count + ")");
 
                         //loop through all elements and extract all datamapitems
                         foreach (var elementListItem in elementList)
@@ -257,6 +258,13 @@ namespace Cidean.WebScraper.Core
             }
         }
 
+        private void DoDelay()
+        {
+            //delay between next action (url grab, file download)
+            LogEvent("Delay for " + Delay + "ms");
+            System.Threading.Thread.Sleep(Delay);
+        }
+
         /// <summary>
         /// Log scraping action
         /// </summary>
@@ -275,7 +283,10 @@ namespace Cidean.WebScraper.Core
         private IDocument GetHtmlDocument(string uri)
         {
             try
-            { 
+            {
+                //delay before grab of document/file
+                DoDelay();
+
                 //html to extract from document
                 string html = "";
                 string url = uri;
@@ -347,6 +358,9 @@ namespace Cidean.WebScraper.Core
         private bool DownloadImage(string uri, string fileName)
         {
 
+            //delay before grab of document/file
+            DoDelay();
+
             var url = uri;
             
             try
@@ -386,13 +400,7 @@ namespace Cidean.WebScraper.Core
                 LogEvent(ex.Message + "  " + url);
                 return false;
             }
-            finally
-            {
-                //delay between next url grab in milliseconds
-                //to prevent overloading server.
-                LogEvent("Delay for " + Delay + "ms");
-                System.Threading.Thread.Sleep(this.Delay);
-            }
+
         }
 
     }
