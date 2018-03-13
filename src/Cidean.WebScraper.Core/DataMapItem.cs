@@ -27,6 +27,15 @@ namespace Cidean.WebScraper.Core
         [XmlAttribute("Name")]
         public string Name { get; set; }
 
+        //Value to be extracted (default is inner element text)
+        [XmlAttribute("Value")]
+        public string Value { get; set; }
+
+        //True prefixes element value with Base Url (authority)
+        [XmlAttribute("PrefixBaseUrl")]
+        public string PrefixBaseUrl { get; set; }
+
+
         //Export element name for list item
         [XmlAttribute("ListName")]
         public string ListName { get; set; }

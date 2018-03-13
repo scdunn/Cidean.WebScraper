@@ -120,7 +120,11 @@ namespace Cidean.WebScraper.Core
         {
             var element = sourceElement;
             var dataMapItemIndex = 0;
-            
+
+            //base url (authority) to attach to relative urls
+            var baseUrl = "";
+            if(!string.IsNullOrEmpty(url))
+                baseUrl = (new Uri(url)).GetLeftPart(UriPartial.Authority);
 
             //loop through all data map items
             foreach (var dataMapItem in dataMapItems)
@@ -136,14 +140,27 @@ namespace Cidean.WebScraper.Core
                     //check if value was found for path
                     if(valueElement != null)
                     {
-                        //handle image source url vs file download
-                        //text type on image tag will get src
-                        if (valueElement.TagName.ToLower() == "img")
+                        //custom value for attribute on element vs element inner value text
+                        if(!string.IsNullOrEmpty(dataMapItem.Value))
                         {
-                            value = (new Uri(url)).GetLeftPart(UriPartial.Authority) + valueElement.GetAttribute("src");
+                            //default is empty unless found in following statements
+                            value = "";
+
+                            //var attribute value
+                            var attrName = dataMapItem.Value.Replace("@", "");
+
+                            if(dataMapItem.Value.StartsWith("@"))
+                                if (valueElement.HasAttribute(attrName))
+                                    value = baseUrl + valueElement.GetAttribute(attrName);
+
                         }
                         else
+                        {
+                            //if no value property set, grab inner text of element
+                            //by default.
                             value = valueElement.TextContent.Trim();
+                        }
+
                         LogEvent("Extracting path(" + dataMapItem.Path + ") to " + dataMapItem.Name + "=" + value);
                     }
                     else
