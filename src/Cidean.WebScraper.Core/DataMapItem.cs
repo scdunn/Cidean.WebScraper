@@ -33,9 +33,13 @@ namespace Cidean.WebScraper.Core
 
         //True prefixes element value with Base Url (authority)
         [XmlAttribute("PrefixBaseUrl")]
-        public string PrefixBaseUrl { get; set; }
+        public bool PrefixBaseUrl { get; set; }
 
+        //True indicates source of progress (count progression)
+        [XmlAttribute("IsProgress")]
+        public bool IsProgress { get; set; }
 
+   
         //Export element name for list item
         [XmlAttribute("ListName")]
         public string ListName { get; set; }

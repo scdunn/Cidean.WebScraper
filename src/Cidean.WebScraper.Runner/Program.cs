@@ -112,6 +112,7 @@ namespace Cidean.WebScraper.Runner
                 //initialize web scraper and load data map
                 Scraper scraper = new Scraper();
                 scraper.LoggedEvent += Scraper_LoggedEvent;
+                scraper.ProgressChanged += Scraper_ProgressChanged;
                 scraper.Delay = delay;
 
                 //create datamap from xml file
@@ -139,11 +140,17 @@ namespace Cidean.WebScraper.Runner
 
         }
 
+        private static void Scraper_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+            Console.WriteLine(string.Format("Progress..{0} of {1}", e.ProgressCurrent, e.ProgressCount));
+
+        }
+
         //Event handler for scraping events.  Log to console.
         private static void Scraper_LoggedEvent(object sender, LoggedEventArgs e)
         {
-            //log event to console
-            Console.WriteLine(e.TimeStamp.ToString() + ": " + e.Message);
+            //log event to debugger
+            System.Diagnostics.Debug.WriteLine(e.TimeStamp.ToString() + ": " + e.Message);
         }
 
         

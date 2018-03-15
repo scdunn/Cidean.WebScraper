@@ -19,6 +19,13 @@ namespace Cidean.WebScraper.Core
         //Status events during scrape executing
         public event EventHandler<LoggedEventArgs> LoggedEvent;
 
+        //Marks progress on scraping (as much as possible)
+        public event EventHandler<ProgressChangedEventArgs> ProgressChanged;
+
+        //total number of links to download
+        public int ProgressCount { get; set; }
+        public int ProgressCurrent { get; set; }
+
         public DataMap DataMap;
 
         public string OutputRootPath;
@@ -82,6 +89,9 @@ namespace Cidean.WebScraper.Core
             //create root output element
             XElement xmlRoot = new XElement(DataMap.Name);
 
+            //set total links to urls to crawl
+            ProgressCount = DataMap.Urls.Count();
+
             //loop all Urls
             foreach (string url in DataMap.Urls)
             {
@@ -92,6 +102,9 @@ namespace Cidean.WebScraper.Core
                 //Fetch document and extract data
                 LogEvent("Fetching Document at " + url);
                 var document = GetHtmlDocument(url);
+
+                //increase progress index
+                ProgressCount += 1;
 
                 if(document != null)
                 {
@@ -113,6 +126,8 @@ namespace Cidean.WebScraper.Core
 
         }
         
+        
+
         /// <summary>
         /// Execute child items within map item list
         /// </summary>
@@ -120,6 +135,9 @@ namespace Cidean.WebScraper.Core
         {
             var element = sourceElement;
             var dataMapItemIndex = 0;
+
+
+
 
             //base url (authority) to attach to relative urls
             var baseUrl = "";
@@ -213,6 +231,8 @@ namespace Cidean.WebScraper.Core
                     //check if value was found for path
                     if (valueElement != null)
                     {
+                        
+
                         value = valueElement.GetAttribute("href");
                         LogEvent("Extracting path(" + dataMapItem.Path + ") to " + dataMapItem.Name + "=" + value);
 
@@ -226,6 +246,8 @@ namespace Cidean.WebScraper.Core
                             //Extract Map Items
                             var xmlLink = new XElement(dataMapItem.Name, new XAttribute("Url", value));
                             
+
+
                             ExecuteDataMapItems(dataMapItem.DataMapItems, document.DocumentElement, xmlLink, value);
                             //write xml output element for value
                             output.Add(xmlLink);
@@ -250,6 +272,10 @@ namespace Cidean.WebScraper.Core
 
                     if (elementList.Count!=0)
                     {
+                        //add total list items discovered to progress count
+                        if (dataMapItem.IsProgress)
+                            ProgressCount += elementList.Count;
+
                         //create list output xml element
                         XElement xmlList = new XElement(dataMapItem.ListName);
                         LogEvent("Creating List..." + dataMapItem.ListName + "...(count:" + elementList.Count + ")");
@@ -260,6 +286,10 @@ namespace Cidean.WebScraper.Core
                             XElement xmlListItem = new XElement(dataMapItem.Name);
                             ExecuteDataMapItems(dataMapItem.DataMapItems, elementListItem, xmlListItem, url);
                             xmlList.Add(xmlListItem);
+
+                            //add total list items discovered to progress count
+                            if (dataMapItem.IsProgress)
+                                IncreaseProgress("Crawling..." + dataMapItem.ListName, 1);
                         }
 
                         //add list to xml output element
@@ -273,6 +303,14 @@ namespace Cidean.WebScraper.Core
                 }
 
             }
+        }
+
+        private void IncreaseProgress(string message, int value)
+        {
+            ProgressCurrent += value;
+            if (ProgressChanged != null)
+                ProgressChanged(this, new ProgressChangedEventArgs(){ TimeStamp = DateTime.Now, ProgressCount = this.ProgressCount, ProgressCurrent = this.ProgressCurrent});
+
         }
 
         private void DoDelay()
