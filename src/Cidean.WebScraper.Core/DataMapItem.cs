@@ -48,6 +48,11 @@ namespace Cidean.WebScraper.Core
         [XmlAttribute("MaxItems")]
         public int MaxItems { get; set; }
 
+        //Exclude link url from link element
+        [XmlAttribute("ExcludeLinkUrl")]
+        public bool ExcludeLinkUrl { get; set; }
+
+
         //Child Map Items
         [XmlArrayItem(ElementName = "DataMapItem")]
         public List<DataMapItem> DataMapItems { get; set; }

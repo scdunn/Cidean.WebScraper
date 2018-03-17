@@ -240,6 +240,10 @@ namespace Cidean.WebScraper.Core
                         
 
                         value = valueElement.GetAttribute("href");
+                        if (!value.StartsWith("http"))
+                            value = baseUrl + value;
+
+
                         LogEvent("Extracting path(" + dataMapItem.Path + ") to " + dataMapItem.Name + "=" + value);
 
                         //Fetch document and extract data
@@ -250,7 +254,11 @@ namespace Cidean.WebScraper.Core
                         {
                             LogEvent("Extracting Document data.");
                             //Extract Map Items
-                            var xmlLink = new XElement(dataMapItem.Name, new XAttribute("Url", value));
+                            var xmlLink = new XElement(dataMapItem.Name);
+                            if(!dataMapItem.ExcludeLinkUrl)
+                            { 
+                                xmlLink.Add(new XAttribute("Url", value));
+                            }
                             //write xml output element for value
                             output.Add(xmlLink);
 
@@ -292,10 +300,16 @@ namespace Cidean.WebScraper.Core
                         //loop through all elements and extract all datamapitems
                         foreach (var elementListItem in elementList)
                         {
-                            XElement xmlListItem = new XElement(dataMapItem.Name);
-                            xmlList.Add(xmlListItem);
-                            ExecuteDataMapItems(dataMapItem.DataMapItems, elementListItem, xmlListItem, url);
-                            
+                            if(!string.IsNullOrEmpty(dataMapItem.Name))
+                            { 
+                                XElement xmlListItem = new XElement(dataMapItem.Name);
+                                xmlList.Add(xmlListItem);
+                                ExecuteDataMapItems(dataMapItem.DataMapItems, elementListItem, xmlListItem, url);
+                            }
+                            else
+                            {
+                                ExecuteDataMapItems(dataMapItem.DataMapItems, elementListItem, xmlList, url);
+                            }
 
                             //add total list items discovered to progress count
                             if (dataMapItem.IsProgress)
@@ -432,6 +446,7 @@ namespace Cidean.WebScraper.Core
         private bool DownloadImage(string uri, string fileName)
         {
 
+            return true;
             //delay before grab of document/file
             DoDelay();
 
