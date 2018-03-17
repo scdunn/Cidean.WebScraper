@@ -242,3 +242,4 @@ ModelManifest.xml
 .fake/
 /src/DataPages
 /src/data.xml
+/src/Cidean.WebScraper.Runner/Output
