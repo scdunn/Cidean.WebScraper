@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Xml.Linq;
 using AngleSharp.Dom;
 using System.Net;
+using System.Xml;
 
 namespace Cidean.WebScraper.Core
 {
@@ -15,6 +16,8 @@ namespace Cidean.WebScraper.Core
     /// </summary>
     public class Scraper
     {
+
+        private XElement xmlRoot;
 
         //Status events during scrape executing
         public event EventHandler<LoggedEventArgs> LoggedEvent;
@@ -87,7 +90,7 @@ namespace Cidean.WebScraper.Core
             }
 
             //create root output element
-            XElement xmlRoot = new XElement(DataMap.Name);
+            xmlRoot = new XElement(DataMap.Name);
 
             //set total links to urls to crawl
             ProgressCount = DataMap.Urls.Count();
@@ -103,30 +106,34 @@ namespace Cidean.WebScraper.Core
                 LogEvent("Fetching Document at " + url);
                 var document = GetHtmlDocument(url);
 
-                //increase progress index
-                ProgressCount += 1;
+                IncreaseProgress("Crawling..." + url, 1);
 
                 if(document != null)
-                {
+                {   
+                    //add url output element to output root
+                    xmlRoot.Add(xmlUrl);
+
                     LogEvent("Extracting Document data.");
                     //Extract Map Items
                     ExecuteDataMapItems(DataMap.DataMapItems, document.DocumentElement, xmlUrl, url);
-                    //add url output element to output root
-                    xmlRoot.Add(xmlUrl);
+                    
                 }
 
 
 
             }
-            
 
-            //write output xml to file
-            LogEvent("Saving xml output file.");
-            xmlRoot.Save(Path.Combine(this.DataPath, "data.xml"));
+
+            SaveXml();
 
         }
         
-        
+        public void SaveXml()
+        {
+            //write output xml to file
+            LogEvent("Saving xml output file.");
+            xmlRoot.Save(Path.Combine(this.DataPath, "data.xml"));
+        }
 
         /// <summary>
         /// Execute child items within map item list
@@ -148,7 +155,6 @@ namespace Cidean.WebScraper.Core
             foreach (var dataMapItem in dataMapItems)
             {
 
-                
                 //handle text item
                 if (dataMapItem.Type.ToLower() == "text")
                 {
@@ -189,7 +195,7 @@ namespace Cidean.WebScraper.Core
                     }
 
                     //write xml output element for value
-                    output.Add(new XElement(dataMapItem.Name, value));
+                    output.Add(new XElement(dataMapItem.Name, CleanString(value)));
                 }
 
                 //handle image item
@@ -219,7 +225,7 @@ namespace Cidean.WebScraper.Core
                     }
 
                     //write xml output element for value
-                    output.Add(new XElement(dataMapItem.Name, value));
+                    output.Add(new XElement(dataMapItem.Name, CleanString(value)));
                 }
 
                 //handle link item--follow page
@@ -245,12 +251,12 @@ namespace Cidean.WebScraper.Core
                             LogEvent("Extracting Document data.");
                             //Extract Map Items
                             var xmlLink = new XElement(dataMapItem.Name, new XAttribute("Url", value));
-                            
+                            //write xml output element for value
+                            output.Add(xmlLink);
 
 
                             ExecuteDataMapItems(dataMapItem.DataMapItems, document.DocumentElement, xmlLink, value);
-                            //write xml output element for value
-                            output.Add(xmlLink);
+                            
                         }
                     }
                     else
@@ -270,7 +276,8 @@ namespace Cidean.WebScraper.Core
                     //get all list item elements from from selector
                     var elementList = QueryElements(element, dataMapItem.Path, dataMapItem.MaxItems);
 
-                    if (elementList.Count!=0)
+                    
+                        if (elementList.Count!=0)
                     {
                         //add total list items discovered to progress count
                         if (dataMapItem.IsProgress)
@@ -278,22 +285,27 @@ namespace Cidean.WebScraper.Core
 
                         //create list output xml element
                         XElement xmlList = new XElement(dataMapItem.ListName);
+                        //add list to xml output element
+                        output.Add(xmlList);
                         LogEvent("Creating List..." + dataMapItem.ListName + "...(count:" + elementList.Count + ")");
 
                         //loop through all elements and extract all datamapitems
                         foreach (var elementListItem in elementList)
                         {
                             XElement xmlListItem = new XElement(dataMapItem.Name);
-                            ExecuteDataMapItems(dataMapItem.DataMapItems, elementListItem, xmlListItem, url);
                             xmlList.Add(xmlListItem);
+                            ExecuteDataMapItems(dataMapItem.DataMapItems, elementListItem, xmlListItem, url);
+                            
 
                             //add total list items discovered to progress count
                             if (dataMapItem.IsProgress)
+                            {
+                                SaveXml();
                                 IncreaseProgress("Crawling..." + dataMapItem.ListName, 1);
+                            }
                         }
 
-                        //add list to xml output element
-                        output.Add(xmlList);
+                        
                     }
                     else
                     {
@@ -404,6 +416,13 @@ namespace Cidean.WebScraper.Core
                 return elements.ToList();
         }
 
+
+        private string CleanString(string value)
+        {
+            char[] validXmlChars = value.Trim().Where(ch => XmlConvert.IsXmlChar(ch)).ToArray();
+            return new string(validXmlChars);
+            
+        }
 
         /// <summary>
         /// Download Image from remote location
