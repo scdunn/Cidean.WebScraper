@@ -2,6 +2,8 @@
 
 Crawls a series of urls and extracts content from the page into an xml file.  The original goal of this project was to extract test data for prototype projects.  
 
+[![Build Status](https://dev.azure.com/chris0850/chris/_apis/build/status/scdunn.Cidean.WebScraper?branchName=master)](https://dev.azure.com/chris0850/chris/_build/latest?definitionId=1&branchName=master)
+
 Solution is split into multiple projects.
 ### Cidean.WebScraper.Core
 Contains the core processing logic for scraping data from a webpage.
