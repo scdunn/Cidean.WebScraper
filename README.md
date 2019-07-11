@@ -19,4 +19,27 @@ Other projects will be included showcasing using the scraper in a web applicatio
 
 
 ## Configuration
-The configuration for a given scrap/extract is stored in a Data Map, DataMap file in xml format.		
+The configuration for a given scrap/extract is stored in a Data Map, DataMap file in xml format.	
+
+```<?xml version="1.0" encoding="utf-8" ?>
+<DataMap Name="Amazon"  >
+<Urls>
+  <Url><![CDATA[amazon-mystery-list.html]]></Url>
+  <Url><![CDATA[https://web.archive.org/web/20150616214557/http://www.amazon.com/gp/bestsellers/books/18]]></Url>
+</Urls>
+<DataMapItems>
+  <DataMapItem Type="text" Path="#zg_listTitle" Name="Title"/>
+  <DataMapItem Type="list" Path=".zg_itemImmersion" ListName="Books" Name="Book">
+      <DataMapItems>
+        <DataMapItem Type="text" Path=".zg_rankDiv" Name="Rank"/>
+        <DataMapItem Type="text" Path=".zg_title" Name="Title"/>
+        <DataMapItem Type="text" Path=".zg_byline" Name="Byline"/>
+        <DataMapItem Type="text" Path=".price" Name="Price"/>
+        <DataMapItem Type="image" Path="img" Name="Thumb"/>
+      </DataMapItems>
+    </DataMapItem>
+</DataMapItems>    
+
+</DataMap>
+```
+
