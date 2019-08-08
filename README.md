@@ -17,9 +17,18 @@ Usage:
 ### Other
 Other projects will be included showcasing using the scraper in a web application.
 
-
-## Configuration
+### Configuration
 The configuration for a given scrap/extract is stored in a Data Map, DataMap file in xml format.	
+
+### Name
+Output name of data item
+
+### Type
+Text, Link, Image, List
+
+### Path
+CSS Selector path of element
+
 
 ```<?xml version="1.0" encoding="utf-8" ?>
 <DataMap Name="Amazon"  >
@@ -42,4 +51,6 @@ The configuration for a given scrap/extract is stored in a Data Map, DataMap fil
 
 </DataMap>
 ```
+
+
 
