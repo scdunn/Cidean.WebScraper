@@ -8,6 +8,7 @@ using System.Xml.Linq;
 using AngleSharp.Dom;
 using System.Net;
 using System.Xml;
+using System.IO.Compression;
 
 namespace Cidean.WebScraper.Core
 {
@@ -371,15 +372,9 @@ namespace Cidean.WebScraper.Core
                 //html to extract from document
                 string html = "";
                 string url = uri;
-            
+
                 //download html document from remote URI
-                using (WebClient client = new WebClient())
-                {
-                        //add request headers to appear as browser
-                        client.Headers.Add("user-agent", "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.103 Safari/537.36");
-                        client.Headers.Add("accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8");
-                        html = client.DownloadString(url);
-                }
+                html = DownloadString(url);
 
                 //parse html document
                 var parser = new AngleSharp.Parser.Html.HtmlParser();
@@ -395,7 +390,39 @@ namespace Cidean.WebScraper.Core
                 return null;
             }
         }
-        
+
+
+        public string DownloadString(string uri)
+        {
+            WebClient webClient = null;
+            try
+            {
+                webClient = new WebClient();
+                webClient.Encoding = Encoding.UTF8;
+                webClient.Headers.Add("user-agent", "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.103 Safari/537.36");
+                webClient.Headers.Add("accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8");
+                byte[] data = webClient.DownloadData(uri);
+
+                MemoryStream output = new MemoryStream();
+                using (GZipStream stream = new GZipStream(new MemoryStream(data), CompressionMode.Decompress))
+                {
+                    stream.CopyTo(output);
+                }
+
+                return Encoding.UTF8.GetString(output.ToArray());
+            }
+            catch
+            {
+
+            }
+            finally
+            {
+                if (webClient != null)
+                    webClient.Dispose();
+            }
+            return null;
+        }
+
         /// <summary>
         /// Query an element within a document given the selector
         /// </summary>

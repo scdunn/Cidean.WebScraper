@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<DataMap Name="Amazon" Delay="5000">
+<Urls>
+  <Url><![CDATA[https://www.amazon.com/gp/bestsellers/2019/books]]></Url>
+</Urls>
+<DataMapItems>
+  <DataMapItem Type="list" Path=".zg-item-immersion" ListName="Books" Name="Book" MaxItems="5">
+      <DataMapItems>
+        <DataMapItem Type="link" Path="#zg-ordered-list > li > span > div > span > a" Name="Link">
+          <DataMapItems>
+              <DataMapItem Type="text" Path="#productTitle" Name="Title"/>             
+              <DataMapItem Type="text" Path="#bylineInfo > span > span.a-declarative > a.a-link-normal.contributorNameID" Name="Author"/>
+              <DataMapItem Type="text" Path="#buyNewSection > h5 > div > div.a-column.a-span8.a-text-right.a-span-last > div > span.a-size-medium.a-color-price.offer-price.a-text-normal" Name="Price"/>
+              <DataMapItem Type="text" Path="#productDetailsTable > tbody > tr > td > div > ul > li:nth-child(5)" Name="ISBN"/>
+          </DataMapItems>
+        </DataMapItem>>
+      </DataMapItems>
+    </DataMapItem>
+</DataMapItems>    
+
+</DataMap>
