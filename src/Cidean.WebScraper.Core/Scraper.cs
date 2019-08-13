@@ -473,7 +473,7 @@ namespace Cidean.WebScraper.Core
         private bool DownloadImage(string uri, string fileName)
         {
 
-            return true;
+            
             //delay before grab of document/file
             DoDelay();
 
