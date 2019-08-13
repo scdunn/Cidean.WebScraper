@@ -9,6 +9,7 @@ using AngleSharp.Dom;
 using System.Net;
 using System.Xml;
 using System.IO.Compression;
+using System.Drawing;
 
 namespace Cidean.WebScraper.Core
 {
@@ -210,13 +211,22 @@ namespace Cidean.WebScraper.Core
                     if (valueElement != null)
                     {
                         src = valueElement.GetAttribute("src");
-                        value = Path.GetFileName(src);
+                        if (src.StartsWith("\ndata:image/jpeg;base64,"))
+                        {
+                            value = (new Random()).Next().ToString() + ".jpg";
+                            SaveBase64StringImage(src.Replace("\ndata:image/jpeg;base64,", ""), Path.Combine(this.DataPath, value));
 
-                        LogEvent("Extracting path(" + dataMapItem.Path + ") to " + dataMapItem.Name + "=" + value);
-                        LogEvent("Download image..." + src);
-                        if (src.StartsWith("/"))
-                            src = (new Uri(url)).GetLeftPart(UriPartial.Authority) + src;
-                        DownloadImage(src, value);
+                        }
+                        else
+                        { 
+                            value = Path.GetFileName(src);
+
+                            LogEvent("Extracting path(" + dataMapItem.Path + ") to " + dataMapItem.Name + "=" + value);
+                            LogEvent("Download image..." + src);
+                            if (src.StartsWith("/"))
+                                src = (new Uri(url)).GetLeftPart(UriPartial.Authority) + src;
+                            DownloadImage(src, value);
+                        }
                     }
                     else
                     {
@@ -519,5 +529,25 @@ namespace Cidean.WebScraper.Core
 
         }
 
+
+        private void SaveBase64StringImage(string base64String, string fileName)
+        {
+            byte[] byteBuffer = Convert.FromBase64String(base64String);
+            MemoryStream memoryStream = new MemoryStream(byteBuffer);
+
+            var result = new Bitmap(memoryStream);
+
+            using(Image image = result)
+                {
+                image.Save(fileName, System.Drawing.Imaging.ImageFormat.Jpeg);
+
+                }
+
+            //clean up
+            byteBuffer = null;
+            memoryStream.Close();
+            memoryStream = null;
+            
+        }
     }
 }
